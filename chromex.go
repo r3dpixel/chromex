@@ -17,10 +17,10 @@ const (
 // It receives the chromedp context and should return the extracted data or an error.
 type Extractor[T any] func(ctx context.Context) (T, error)
 
-// ChromeConfig holds configuration for Chrome execution.
-type ChromeConfig struct {
+// Options holds configuration for Chrome execution.
+type Options struct {
 	// Path to the Chrome executable. If empty, chromedp will try to find Chrome automatically.
-	ChromePath string
+	Path string
 	// Timeout for the entire Chrome operation. Defaults to 120 seconds if not set.
 	Timeout time.Duration
 	// Custom chromedp flags. If empty, DefaultFlags() will be used.
@@ -51,7 +51,7 @@ func DefaultFlags() []chromedp.ExecAllocatorOption {
 //   - extractor: Function that performs the actual extraction using the chromedp context
 //
 // Returns the extracted data of type T and any error encountered.
-func RunChrome[T any](config ChromeConfig, extractor Extractor[T]) (T, error) {
+func RunChrome[T any](config Options, extractor Extractor[T]) (T, error) {
 	// Use default flags if none provided
 	if len(config.Flags) == 0 {
 		config.Flags = DefaultFlags()
@@ -59,9 +59,9 @@ func RunChrome[T any](config ChromeConfig, extractor Extractor[T]) (T, error) {
 
 	// Add the custom Chrome path if specified (prepend to avoid mutating the original slice)
 	flags := config.Flags
-	if stringsx.IsNotBlank(config.ChromePath) {
+	if stringsx.IsNotBlank(config.Path) {
 		newFlags := make([]chromedp.ExecAllocatorOption, len(flags)+1)
-		newFlags[0] = chromedp.ExecPath(config.ChromePath)
+		newFlags[0] = chromedp.ExecPath(config.Path)
 		copy(newFlags[1:], flags)
 		flags = newFlags
 	}
