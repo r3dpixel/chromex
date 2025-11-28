@@ -4,7 +4,7 @@ go 1.25.4
 
 require (
 	github.com/chromedp/chromedp v0.14.2
-	github.com/r3dpixel/toolkit v1.0.7
+	github.com/r3dpixel/toolkit v1.0.9
 )
 
 require (
